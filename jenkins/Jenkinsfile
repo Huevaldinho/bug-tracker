@@ -111,6 +111,21 @@ pipeline {
                     '''
                 }
             }
+            post {
+                always{
+                    junit 'tests-api/test-results/results.xml'
+                    publishHTML(
+                        target: [
+                            reportDir: 'tests-api/playwright-report',
+                            reportFiles: 'index.html',
+                            reportName: 'Playwright API Tests Report',
+                            keepAll: true,
+                            alwaysLinkToLastBuild: true
+                        ]
+                    )
+
+                }
+            }
         } // Fin Stage API
     } // Fin Stages
 
