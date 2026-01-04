@@ -94,6 +94,9 @@ pipeline {
             }
         } // Fin Stage Launch
 
+        // ----------------------------------------------------
+        // STAGE 4: API Tests
+        // ----------------------------------------------------
         stage("API Tests") {
             agent {
                 docker {
@@ -127,6 +130,27 @@ pipeline {
                 }
             }
         } // Fin Stage API
+
+        // ----------------------------------------------------
+        // STAGE 5: E2E Tests
+        // ----------------------------------------------------
+        stage ("E2E Tests"){
+            agent{
+                docker{
+                    image 'mcr.microsoft.com/playwright:v1.50.0-jammy'
+                    reuseNode true
+                    args '-u 0 --network=host'
+                }
+            }
+            steps{
+                dir('tests-e2e'){
+                    sh '''
+                        npm ci
+                        npx playwright test
+                    '''
+                }
+            }
+        }
     } // Fin Stages
 
     post {
