@@ -92,4 +92,10 @@ pipeline {
             } // Fin Parallel
         } // Fin Stage "Execute Unit Tests"
     } // Fin Stages
+    post {
+        always {
+            cleanWs()
+            echo 'Pipeline execution completed.'
+        }
+    }
 } // Fin Pipeline
