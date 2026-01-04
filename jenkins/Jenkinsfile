@@ -7,10 +7,11 @@ pipeline {
                 docker {
                     image 'golang:tip-trixie'
                     reuseNode true
+                    args '-e GOCACHE=/tmp/.cache -e GOMODCACHE=/tmp/.modcache'
                 }
             }
             steps {
-                 dir('bugtracker-backend') {
+                dir('bugtracker-backend') {
                     sh 'go test -v ./...'
                 }
             }
