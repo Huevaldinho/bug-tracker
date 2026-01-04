@@ -5,7 +5,7 @@ pipeline {
         stage('Unit Tests - Back End') {
             agent {
                 docker {
-                    image 'tip-trixie',
+                    image 'golang:tip-trixie'
                     reuseNode true
                 }
             }
