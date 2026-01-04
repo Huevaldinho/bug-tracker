@@ -61,9 +61,6 @@ pipeline {
                     steps {
                         dir('bugtracker-frontend') {
                             sh '''
-                                # Clean previous reports
-                                rm -rf reports coverage test-results.xml
-                                
                                 # Install dependencies
                                 npm ci
 
