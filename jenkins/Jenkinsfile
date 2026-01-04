@@ -104,6 +104,23 @@ pipeline {
                 sh 'docker compose up --build -d'
             }
         }// Fin Stage "Launch Application"
+        stage ("API Tests"){
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.50.0-jammy'
+                    reuseNode true
+                    args '-u 0 --network=host'
+                }
+            }
+            steps {
+                dir('tests-api') {
+                    sh '''
+                        npx wait-port http://localhost:8000/api/health -t 30000
+                        npm ci
+                        npx playwright test
+                    '''
+            }
+        }
     } // Fin Stages
     
     // Clean workspace and final message
