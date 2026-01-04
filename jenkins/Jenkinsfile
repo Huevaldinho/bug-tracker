@@ -13,25 +13,25 @@ pipeline {
             steps {
                 dir('bugtracker-backend') {
                     sh '''
-                        # Install go-junit-report
+                        // Install go-junit-report
                         go install github.com/jstemmer/go-junit-report/v2@latest
 
-                        # Run Tests and generate JUnit report
+                        // Run Tests and generate JUnit report
                         go test ./... -v 2>&1 | go-junit-report > test-results.xml
 
-                        # Generate Coverage Report
+                        // Generate Coverage Report
                         go test -coverprofile=coverage.out -o ./... covermode=atomic
                         go tool cover -html=coverage.out -o coverage.html
 
-                        # Move html report to reports directory
+                        // Move html report to reports directory
                         mkdir -p reports
                         mv coverage.html reports/
                     '''
                 }
             }
             post { 
+                    // Publish Test Results and Coverage Report to Jenkins
                 always{
-                    # Publish Test Results and Coverage Report to Jenkins
                     junit 'bugtracker-backend/test-results.xml'
                     publishHTML(target: [
                         reportDir: 'bugtracker-backend/reports',
