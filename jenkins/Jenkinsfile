@@ -13,17 +13,24 @@ pipeline {
             steps {
                 dir('bugtracker-backend') {
                     sh '''
-                        # Install go-junit-report
+                        # 1. Instalar go-junit-report
                         go install github.com/jstemmer/go-junit-report/v2@latest
 
-                        # Run Tests and generate JUnit report
-                        go test -v ./...  2>&1 | go-junit-report > test-results.xml
+                        # 2. Agregar el bin de Go al PATH para poder usar la herramienta instalada
+                        export PATH=$PATH:$(go env GOPATH)/bin
 
-                        # Generate Coverage Report
+                        # 3. Correr tests y generar reporte JUnit
+                        # Nota: 2>&1 redirige errores al output estándar para que la herramienta lo lea
+                        go test -v ./... 2>&1 | go-junit-report > test-results.xml
+
+                        # 4. Generar Reporte de Cobertura (CORREGIDO)
+                        # Quitamos el '-o' y agregamos el guion a -covermode
                         go test -coverprofile=coverage.out -covermode=atomic ./...
+                        
+                        # 5. Convertir a HTML
                         go tool cover -html=coverage.out -o coverage.html
 
-                        # Move html report to reports directory
+                        # 6. Mover reporte
                         mkdir -p reports
                         mv coverage.html reports/
                     '''
