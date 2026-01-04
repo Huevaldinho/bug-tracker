@@ -17,10 +17,10 @@ pipeline {
                         go install github.com/jstemmer/go-junit-report/v2@latest
 
                         # Run Tests and generate JUnit report
-                        go test ./... -v 2>&1 | go-junit-report > test-results.xml
+                        go test -v ./...  2>&1 | go-junit-report > test-results.xml
 
                         # Generate Coverage Report
-                        go test -coverprofile=coverage.out -o ./... covermode=atomic
+                        go test -coverprofile=coverage.out -covermode=atomic ./...
                         go tool cover -html=coverage.out -o coverage.html
 
                         # Move html report to reports directory
