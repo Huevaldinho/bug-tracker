@@ -52,7 +52,13 @@ pipeline {
             steps {
                 dir('bugtracker-frontend') {
                     sh '''
+                        # Clean previous reports
+                        rm -rf reports coverage test-results.xml
+                        
+                        # Install dependencies
                         npm ci
+
+                        # Run Tests with coverage and generate JUnit report
                         npm test
 
                         # Move test results to reports directory
