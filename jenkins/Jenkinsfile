@@ -88,23 +88,25 @@ pipeline {
                 }
             } // Fin Parallel
         } // Fin Stage "Execute Unit Tests"
-    } // Fin Stages
-    // ----------------------------------------------------
-    // STAGE 3: Run APP
-    // ----------------------------------------------------
 
-    stage ("Launch Application"){
-        agent {
-            docker {
-                image 'docker:20-dind'
-                reuseNode true
-                args '-v /var/run/docker.sock:/var/run/docker.sock -u 0'
+        // ----------------------------------------------------
+        // STAGE 3: Run APP
+        // ----------------------------------------------------
+        stage ("Launch Application"){
+            agent {
+                docker {
+                    image 'docker:20-dind'
+                    reuseNode true
+                    args '-v /var/run/docker.sock:/var/run/docker.sock -u 0'
+                }
             }
-        }
-        steps {
-            sh 'docker compose up --build -d'
-        }
-    }
+            steps {
+                sh 'docker compose up --build -d'
+            }
+        }// Fin Stage "Launch Application"
+    } // Fin Stages
+    
+    // Clean workspace and final message
     post {
         always {
             cleanWs()
