@@ -12,13 +12,32 @@ pipeline {
             }
             steps {
                 dir('bugtracker-backend') {
-                    sh 'go install github.com/jstemmer/go-junit-report/v2@latest'
-                    sh 'go test ./... -v 2>&1 | go-junit-report > report.xml'
+                    sh '''
+                        # Install go-junit-report
+                        go install github.com/jstemmer/go-junit-report/v2@latest
+
+                        # Run Tests and generate JUnit report
+                        go test ./... -v 2>&1 | go-junit-report > test-results.xml
+
+                        # Generate Coverage Report
+                        go test -coverprofile=coverage.out -o ./... covermode=atomic
+                        go tool cover -html=coverage.out -o coverage.html
+
+                        # Move html report to reports directory
+                        mkdir -p reports
+                        mv coverage.html reports/
+                    '''
                 }
             }
             post { 
                 always{
-                    junit 'bugtracker-backend/report.xml'
+                    # Publish Test Results and Coverage Report to Jenkins
+                    junit 'bugtracker-backend/test-results.xml'
+                    publishHTML(target: [
+                        reportDir: 'bugtracker-backend/reports',
+                        reportFiles: 'coverage.html',
+                        reportName: 'Backend Coverage Report'
+                    ])
                 }
             }
         }
