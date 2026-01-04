@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('Unit Tests - Back End') {
+        stage('Unit Tests - BackEnd') {
             agent {
                 docker {
                     image 'golang:tip-trixie'
@@ -13,6 +13,23 @@ pipeline {
             steps {
                 dir('bugtracker-backend') {
                     sh 'go test -v ./...'
+                }
+            }
+        }
+
+        stage('Unit Tests - FrontEnd') {
+            agent {
+                docker {
+                    image 'node:20-alpine'
+                    reuseNode true
+                }
+            }
+            steps {
+                dir('bugtracker-frontend') {
+                    sh '''
+                        npm ci
+                        npm test
+                    '''
                 }
             }
         }
